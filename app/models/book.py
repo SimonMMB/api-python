@@ -5,9 +5,9 @@ import enum
 from ..core.database import Base
 
 class ReadingStatus(enum.Enum):
-    pendiente = "pendiente"
-    empezado = "empezado"
-    acabado = "acabado"
+    PENDIENTE = "pendiente"
+    EMPEZADO = "empezado"
+    ACABADO = "acabado"
 
 class Book(Base):
     __tablename__ = "books"
@@ -16,7 +16,7 @@ class Book(Base):
     title = Column(String(200), nullable=False, index=True)
     author = Column(String(100), nullable=False)
     pages = Column(Integer, nullable=True)
-    reading_status = Column(Enum(ReadingStatus), default=ReadingStatus.pendiente, nullable=False)
+    reading_status = Column(Enum(ReadingStatus), default=ReadingStatus.PENDIENTE, nullable=False)
     user_comments = Column(Text, nullable=True)
     series_inspiration = Column(Text, nullable=True) 
     created_at = Column(DateTime(timezone=True), server_default=func.now())

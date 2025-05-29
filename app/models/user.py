@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Integer, String, DateTime, Enum as SQLEnum
 from sqlalchemy.orm import relationship
-import enum
+from sqlalchemy.sql import func
+from enum import Enum
+
 from ..core.database import Base
 
-class UserRole(enum.Enum):
-    reader = "reader"
-    admin = "admin"
+class UserRole(str, Enum):
+    ADMIN = "admin"
+    READER = "reader"
 
 class User(Base):
     __tablename__ = "users"
@@ -15,9 +16,11 @@ class User(Base):
     username = Column(String(50), unique=True, index=True, nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
-    role = Column(Enum(UserRole), default=UserRole.reader, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    role = Column(SQLEnum(UserRole), default=UserRole.READER, nullable=False)
     
-    # Relación con libros (un usuario tiene muchos libros)
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    
+    # Relación con libros
     books = relationship("Book", back_populates="owner", cascade="all, delete-orphan")

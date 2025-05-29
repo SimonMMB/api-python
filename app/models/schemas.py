@@ -13,6 +13,16 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     role: Optional[UserRole] = UserRole.READER
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "username": "johndoe",
+                "email": "john@example.com",
+                "password": "secretpassword",
+                "role": "reader"
+            }
+        }
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None

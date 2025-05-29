@@ -13,8 +13,9 @@ class Settings:
     OPENAI_API_KEY: str = config("OPENAI_API_KEY", default="")
     
     # App Info
-    APP_NAME: str = "Book AI API"
+    APP_NAME: str = "SIMON Book API"  
     APP_VERSION: str = "1.0.0"
     APP_DESCRIPTION: str = "API para recomendar libros basados en series de TV usando IA"
 
+# ✅ Instancia global de configuración
 settings = Settings()

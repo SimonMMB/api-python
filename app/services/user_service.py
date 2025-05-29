@@ -24,15 +24,20 @@ class UserService:
     @staticmethod
     async def create_user(db: AsyncSession, user_data: UserCreate) -> User:
         """Crear un nuevo usuario"""
+        from datetime import datetime
+        
         # Hashear la contraseña
         hashed_password = UserService.hash_password(user_data.password)
         
-        # Crear el usuario
+        # Crear el usuario con timestamps manuales
+        now = datetime.utcnow()
         db_user = User(
             username=user_data.username,
             email=user_data.email,
             hashed_password=hashed_password,
-            role=user_data.role or UserRole.READER  # Por defecto reader
+            role=user_data.role or UserRole.READER,
+            created_at=now,
+            updated_at=now
         )
         
         db.add(db_user)

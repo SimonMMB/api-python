@@ -1,8 +1,8 @@
-"""Initial migration: create users and books tables
+"""Initial setup with fixed timestamps
 
-Revision ID: 7a3e2c559181
+Revision ID: b1b0fb928818
 Revises: 
-Create Date: 2025-05-29 09:57:21.545100
+Create Date: 2025-05-29 18:54:54.626577
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '7a3e2c559181'
+revision: str = 'b1b0fb928818'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,9 +26,9 @@ def upgrade() -> None:
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=100), nullable=False),
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
-    sa.Column('role', sa.Enum('reader', 'admin', name='userrole'), nullable=False),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('role', sa.Enum('ADMIN', 'READER', name='userrole'), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
@@ -39,7 +39,7 @@ def upgrade() -> None:
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('author', sa.String(length=100), nullable=False),
     sa.Column('pages', sa.Integer(), nullable=True),
-    sa.Column('reading_status', sa.Enum('pendiente', 'empezado', 'acabado', name='readingstatus'), nullable=False),
+    sa.Column('reading_status', sa.Enum('PENDIENTE', 'EMPEZADO', 'ACABADO', name='readingstatus'), nullable=False),
     sa.Column('user_comments', sa.Text(), nullable=True),
     sa.Column('series_inspiration', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
