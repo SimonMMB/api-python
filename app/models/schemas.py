@@ -4,60 +4,88 @@ from datetime import datetime
 from .user import UserRole
 from .book import ReadingStatus
 
-# ============ USER SCHEMAS ============
+# === ESQUEMAS DE USUARIO ===
 
 class UserBase(BaseModel):
     username: str
-    email: str
-    role: UserRole = UserRole.reader
+    email: EmailStr
 
 class UserCreate(UserBase):
     password: str
+    role: Optional[UserRole] = UserRole.READER
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "username": "johndoe",
+                "email": "john@example.com",
+                "password": "secretpassword",
+                "role": "reader"
+            }
+        }
+
+class AdminUserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[UserRole] = None
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
-    email: Optional[str] = None
-    role: Optional[UserRole] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
 
 class UserResponse(UserBase):
     id: int
+    role: UserRole
     created_at: datetime
-    updated_at: Optional[datetime] = None
+    updated_at: datetime
     
     class Config:
         from_attributes = True
 
-# ============ BOOK SCHEMAS ============
+class UserWithBooks(UserResponse):
+    books: List['BookResponse'] = []
+
+# === ESQUEMAS DE LIBRO ===
 
 class BookBase(BaseModel):
     title: str
     author: str
     pages: Optional[int] = None
-    reading_status: ReadingStatus = ReadingStatus.pendiente
-    user_comments: Optional[str] = None
     series_inspiration: Optional[str] = None
 
 class BookCreate(BookBase):
-    pass
+    reading_status: Optional[ReadingStatus] = ReadingStatus.PENDIENTE
+    user_comments: Optional[str] = None
 
 class BookUpdate(BaseModel):
     title: Optional[str] = None
     author: Optional[str] = None
     pages: Optional[int] = None
+    series_inspiration: Optional[str] = None
     reading_status: Optional[ReadingStatus] = None
     user_comments: Optional[str] = None
-    series_inspiration: Optional[str] = None
 
 class BookResponse(BookBase):
     id: int
+    reading_status: ReadingStatus
+    user_comments: Optional[str] = None
     owner_id: int
     created_at: datetime
-    updated_at: Optional[datetime] = None
+    updated_at: datetime
     
     class Config:
         from_attributes = True
 
-# ============ AUTH SCHEMAS ============
+class BookWithOwner(BookResponse):
+    owner: UserResponse
+
+# === ESQUEMAS DE AUTENTICACIÓN ===
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
 
 class Token(BaseModel):
     access_token: str
@@ -66,21 +94,10 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
+# === ESQUEMAS DE RESPUESTA GENERAL ===
 
-# ============ AI RECOMMENDATION SCHEMAS ============
+class MessageResponse(BaseModel):
+    message: str
 
-class AIRecommendationRequest(BaseModel):
-    series_liked: List[str]  # Lista de series que le gustaron
-    additional_preferences: Optional[str] = None  # Preferencias adicionales
-
-class BookRecommendation(BaseModel):
-    title: str
-    author: str
-    reason: str  # Por qué se recomienda basado en las series
-    similarity_explanation: str  # Explicación de similitudes
-
-class AIRecommendationResponse(BaseModel):
-    recommendations: List[BookRecommendation]
+# Solucionar referencias circulares
+UserWithBooks.model_rebuild()
