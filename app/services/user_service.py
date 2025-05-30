@@ -3,8 +3,8 @@ from sqlalchemy import select
 from typing import Optional, List
 from passlib.context import CryptContext
 
-from ..models.user import User, UserRole
-from ..models.schemas import UserCreate, UserUpdate
+from ..models import User, UserRole
+from ..schemas import UserCreate, UserUpdate
 
 # Configuración para hash de contraseñas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

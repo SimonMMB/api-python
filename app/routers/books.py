@@ -3,11 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 
 from ..core.database import get_db
-from ..services.book_service import BookService
-from ..models.schemas import BookCreate, BookUpdate, BookResponse, MessageResponse
-from ..models.book import ReadingStatus
-from ..models.user import UserRole
-from ..routers.auth import get_current_user
+from ..services import BookService
+from ..schemas import BookCreate, BookUpdate, BookResponse, MessageResponse
+from ..models import ReadingStatus, UserRole 
+from .auth import get_current_user
 
 router = APIRouter(prefix="/books", tags=["Books"])
 

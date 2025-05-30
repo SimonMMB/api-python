@@ -2,8 +2,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import Optional, List
 
-from ..models.book import Book, ReadingStatus
-from ..models.schemas import BookCreate, BookUpdate
+from ..models import Book, ReadingStatus
+from ..schemas import BookCreate, BookUpdate
 
 class BookService:
     
