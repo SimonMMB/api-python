@@ -48,6 +48,10 @@ class RecommendedBook(BaseModel):
     title: str = Field(..., description="Título del libro")
     author: str = Field(..., description="Autor del libro")
     pages: int = Field(..., description="Número de páginas")
+    series_inspiration: str = Field(
+        ..., 
+        description="Serie que inspiró esta recomendación"
+    )
     recommendation_reason: str = Field(
         ..., 
         description="Por qué se recomienda este libro"
@@ -59,6 +63,7 @@ class RecommendedBook(BaseModel):
                 "title": "Gone Girl",
                 "author": "Gillian Flynn", 
                 "pages": 432,
+                "series_inspiration": "Breaking Bad",
                 "recommendation_reason": "Like Breaking Bad, this book explores complex character development and moral ambiguity"
             }
         }
@@ -98,6 +103,7 @@ class BookRecommendationResponse(BaseModel):
                         "title": "Gone Girl",
                         "author": "Gillian Flynn",
                         "pages": 432,
+                        "series_inspiration": "Breaking Bad",
                         "recommendation_reason": "Like Breaking Bad, this book explores complex character development and moral ambiguity"
                     }
                 ],
@@ -147,9 +153,9 @@ class SeriesAnalysisResponse(BaseModel):
 
 class SaveRecommendationRequest(BaseModel):
     """Request para guardar una recomendación como libro del usuario"""
-    book_title: str = Field(..., description="Título del libro recomendado")
-    book_author: str = Field(..., description="Autor del libro")
-    book_pages: int = Field(..., description="Páginas del libro")
+    title: str = Field(..., description="Título del libro recomendado")
+    author: str = Field(..., description="Autor del libro")
+    pages: int = Field(..., description="Páginas del libro")
     series_inspiration: str = Field(
         ..., 
         description="Serie que inspiró la recomendación"

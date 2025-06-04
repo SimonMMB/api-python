@@ -21,8 +21,8 @@ class AIService:
         ],
         "crime": [
             {"title": "The Thursday Murder Club", "author": "Richard Osman", "pages": 368},
-            {"title": "Tana French", "author": "The Likeness", "pages": 466},
-            {"title": "Louise Penny", "author": "Still Life", "pages": 312},
+            {"title": "The Likeness", "author": "Tana French", "pages": 466},
+            {"title": "Still Life", "author": "Louise Penny", "pages": 312},
             {"title": "The Poet", "author": "Michael Connelly", "pages": 512},
         ],
         "psychological": [
@@ -91,22 +91,31 @@ class AIService:
         genres = AIService.SERIES_MAPPING.get(series_key, ["mystery", "drama"])
         
         # Seleccionar libros de los géneros relevantes
-        recommended_books = []
+        raw_books = []
         for genre in genres[:2]:  # Máximo 2 géneros
             if genre in AIService.BOOKS_DATABASE:
                 books = AIService.BOOKS_DATABASE[genre]
                 # Seleccionar libros aleatoriamente
                 selected = random.sample(books, min(2, len(books)))
-                recommended_books.extend(selected)
+                raw_books.extend(selected)
         
         # Limitar al número máximo solicitado
-        if len(recommended_books) > max_books:
-            recommended_books = random.sample(recommended_books, max_books)
+        if len(raw_books) > max_books:
+            raw_books = random.sample(raw_books, max_books)
         
-        # Agregar razones simuladas
-        for book in recommended_books:
-            book["recommendation_reason"] = AIService._generate_reason(series_name, book["title"])
+        # Convertir a objetos RecommendedBook con series_inspiration
+        recommended_books = []
+        for book_data in raw_books:
+            book_dict = {
+                "title": book_data["title"],
+                "author": book_data["author"],
+                "pages": book_data["pages"],
+                "series_inspiration": series_name,  # ✅ NUEVO campo obligatorio
+                "recommendation_reason": AIService._generate_reason(series_name, book_data["title"])
+            }
+            recommended_books.append(book_dict)
         
+        # Retornar diccionario como antes
         return {
             "series_analyzed": series_name,
             "identified_themes": genres[:2],
@@ -135,7 +144,7 @@ class AIService:
         return f"Based on my analysis of '{series_name}', I identified key themes including {themes_str}. These books share similar narrative structures, character complexity, and thematic elements that should appeal to fans of the series."
     
     @staticmethod
-    async def analyze_series(series_name: str) -> Dict[str, Any]:
+    async def analyze_series(series_name: str    ) -> Dict[str, Any]:
         """
         Analiza una serie y extrae temas/géneros (simulado)
         
