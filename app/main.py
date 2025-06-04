@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from .routers import auth, users, books
+from .routers import auth, users, books, ai  # ← Agregar ai
 from .core.config import settings
 
 # Crear la aplicación FastAPI
@@ -24,14 +23,16 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(books.router)
+app.include_router(ai.router)  # ← NUEVO ROUTER
 
 @app.get("/")
 async def root():
     """Endpoint raíz"""
     return {
-        "message": "Welcome to Book Recommendation API", 
+        "message": "Welcome to Book Recommendation API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "ai_endpoints": "/ai"  # ← Agregar referencia a IA
     }
 
 @app.get("/health")

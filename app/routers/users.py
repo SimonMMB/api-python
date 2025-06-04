@@ -4,10 +4,10 @@ from typing import List
 from typing import Union
 
 from ..core.database import get_db
-from ..services.user_service import UserService
-from ..models.schemas import UserResponse, UserUpdate, AdminUserUpdate, UserWithBooks, MessageResponse
-from ..models.user import UserRole
-from ..routers.auth import get_current_user
+from ..services import UserService
+from ..schemas import UserResponse, UserUpdate, AdminUserUpdate, UserWithBooks, MessageResponse
+from ..models import UserRole
+from .auth import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

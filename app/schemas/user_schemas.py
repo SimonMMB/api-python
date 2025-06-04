@@ -1,8 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
-from .user import UserRole
-from .book import ReadingStatus
+from ..models.user import UserRole
 
 # === ESQUEMAS DE USUARIO ===
 
@@ -47,40 +46,6 @@ class UserResponse(UserBase):
 class UserWithBooks(UserResponse):
     books: List['BookResponse'] = []
 
-# === ESQUEMAS DE LIBRO ===
-
-class BookBase(BaseModel):
-    title: str
-    author: str
-    pages: Optional[int] = None
-    series_inspiration: Optional[str] = None
-
-class BookCreate(BookBase):
-    reading_status: Optional[ReadingStatus] = ReadingStatus.PENDIENTE
-    user_comments: Optional[str] = None
-
-class BookUpdate(BaseModel):
-    title: Optional[str] = None
-    author: Optional[str] = None
-    pages: Optional[int] = None
-    series_inspiration: Optional[str] = None
-    reading_status: Optional[ReadingStatus] = None
-    user_comments: Optional[str] = None
-
-class BookResponse(BookBase):
-    id: int
-    reading_status: ReadingStatus
-    user_comments: Optional[str] = None
-    owner_id: int
-    created_at: datetime
-    updated_at: datetime
-    
-    class Config:
-        from_attributes = True
-
-class BookWithOwner(BookResponse):
-    owner: UserResponse
-
 # === ESQUEMAS DE AUTENTICACIÓN ===
 
 class LoginRequest(BaseModel):
@@ -99,5 +64,7 @@ class TokenData(BaseModel):
 class MessageResponse(BaseModel):
     message: str
 
-# Solucionar referencias circulares
-UserWithBooks.model_rebuild()
+# Forward reference que se resolverá después
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .book_schemas import BookResponse

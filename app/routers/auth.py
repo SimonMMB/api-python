@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from ..core.database import get_db
 from ..core.config import settings
 from ..services.user_service import UserService
-from ..models.schemas import UserCreate, UserResponse, Token, TokenData
+from ..schemas import UserCreate, UserResponse, Token, TokenData
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
